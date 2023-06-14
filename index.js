@@ -27,13 +27,35 @@ async function run() {
     // await client.connect();
 
     const schoolCollection = client.db("graphicsSchool").collection("school");
+    const usersCollection = client.db("graphicsSchool").collection("users");
     // const reviewCollection = client.db("bistroDb").collection("reviews");
     // const cartCollection = client.db("bistroDb").collection("carts");
 
+    // school api
     app.get('/school', async (req, res) => {
       const result = await schoolCollection.find().toArray();
       res.send(result);
     })
+
+    // users api
+    app.get('/users', async (req, res) => {
+        const result = await usersCollection.find().toArray();
+        res.send(result);
+      });
+  
+      app.post('/users', async (req, res) => {
+        const user = req.body;
+        const query = { email: user.email }
+        const existingUser = await usersCollection.findOne(query);
+  
+        if (existingUser) {
+          return res.send({ message: 'user already exists' })
+        }
+  
+        const result = await usersCollection.insertOne(user);
+        res.send(result);
+      });
+
 
     // app.get('/reviews', async (req, res) => {
     //   const result = await reviewCollection.find().toArray();
