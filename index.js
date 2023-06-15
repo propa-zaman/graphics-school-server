@@ -168,7 +168,7 @@ async function run() {
 
 
       // enrolled api
-      app.get('/enrolled', async (req, res) => {
+      app.get('/enrolled', verifyJWT, async (req, res) => {
         const email = req.query.email;
   
         if (!email) {
