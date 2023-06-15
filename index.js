@@ -75,7 +75,7 @@ async function run() {
     })
 
     // users api
-    app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
+    app.get('/users/:id', async (req, res) => {
         const result = await usersCollection.find().toArray();
         res.send(result);
       });
@@ -93,10 +93,10 @@ async function run() {
         res.send(result);
       });
 
-      // security layer: verifyJWT
+    // security layer: verifyJWT
     // email same
     // check admin
-    app.get('/users/admin/:email', verifyJWT, async (req, res) => {
+    app.get('/users/admin/:email', async (req, res) => {
         const email = req.params.email;
   
         if (req.decoded.email !== email) {
