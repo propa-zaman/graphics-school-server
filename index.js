@@ -46,8 +46,7 @@ async function run() {
 
     const schoolCollection = client.db("graphicsSchool").collection("school");
     const usersCollection = client.db("graphicsSchool").collection("users");
-    // const reviewCollection = client.db("bistroDb").collection("reviews");
-    // const cartCollection = client.db("bistroDb").collection("carts");
+    const enrolledCollection = client.db("graphicsSchool").collection("enrolled");
 
     app.post('/jwt', (req, res) => {
         const user = req.body;
@@ -165,6 +164,38 @@ async function run() {
         const result = await usersCollection.updateOne(filter, updateDoc);
         res.send(result);
   
+      })
+
+
+      // enrolled api
+      app.get('/enrolled', async (req, res) => {
+        const email = req.query.email;
+  
+        if (!email) {
+          res.send([]);
+        }
+  
+        const decodedEmail = req.decoded.email;
+        if (email !== decodedEmail) {
+          return res.status(403).send({ error: true, message: 'forbidden access' })
+        }
+  
+        const query = { email: email };
+        const result = await enrolledCollection.find(query).toArray();
+        res.send(result);
+      });
+  
+      app.post('/enrolled', async (req, res) => {
+        const item = req.body;
+        const result = await enrolledCollection.insertOne(item);
+        res.send(result);
+      })
+  
+      app.delete('/enrolled/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await enrolledCollection.deleteOne(query);
+        res.send(result);
       })
 
 
