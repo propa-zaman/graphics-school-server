@@ -8,7 +8,7 @@ const port = process.env.PORT || 5001;
 // Middleware
 // app.use(cors());
 app.use(cors({
-    origin: 'http://localhost:5174'
+    origin: 'https://graphics-school.web.app'
   }));
   
 app.use(express.json());
