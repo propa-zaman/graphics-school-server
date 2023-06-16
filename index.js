@@ -6,7 +6,11 @@ require('dotenv').config();
 const port = process.env.PORT || 5001;
 
 // Middleware
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5174'
+  }));
+  
 app.use(express.json());
 
 const verifyJWT = (req, res, next) => {
@@ -70,6 +74,42 @@ async function run() {
       const result = await schoolCollection.find().toArray();
       res.send(result);
     });
+
+    app.get('/school/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+  
+        const result = await schoolCollection.findOne(query);
+        res.send(result);
+      })
+  
+      app.post('/school', async (req, res) => {
+        const addedToys = req.body;
+        console.log(addedToys);
+        const result = await schoolCollection.insertOne(addedToys);
+        res.send(result);
+      });
+  
+      app.patch('/school/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const updatedAddedToy = req.body;
+        console.log(updatedAddedToy);
+        const updateDoc = {
+            $set: {
+                status: updatedAddedToy.status
+            },
+        };
+        const result = await schoolCollection.updateOne(filter, updateDoc);
+        res.send(result);
+    })
+  
+    app.delete('/school/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await schoolCollection.deleteOne(query);
+        res.send(result);
+    })
 
     // users api
     app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
