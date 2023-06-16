@@ -80,7 +80,7 @@ async function run() {
         console.log(req.query.email);
         let query = {};
         if (req.query?.email) {
-            query = { email: req.query.email }
+            query = { instructor_mail: req.query.email }
         }
         const result = await schoolCollection.find(query).toArray();
         res.send(result);
