@@ -70,10 +70,21 @@ async function run() {
     };
 
     // school api
+    
+    // app.get('/school', async (req, res) => {
+    //   const result = await schoolCollection.find().toArray();
+    //   res.send(result);
+    // });
+
     app.get('/school', async (req, res) => {
-      const result = await schoolCollection.find().toArray();
-      res.send(result);
-    });
+        console.log(req.query.email);
+        let query = {};
+        if (req.query?.email) {
+            query = { email: req.query.email }
+        }
+        const result = await schoolCollection.find(query).toArray();
+        res.send(result);
+    })
 
     app.get('/school/:id', async (req, res) => {
         const id = req.params.id;
