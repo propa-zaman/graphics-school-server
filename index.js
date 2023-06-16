@@ -122,6 +122,63 @@ async function run() {
         res.send(result);
     })
 
+    // security layer: verifyJWT
+    // email same
+    // check admin
+    app.get('/school/approve/:email', async (req, res) => {
+      const email = req.params.email;
+
+      if (req.decoded.email !== email) {
+        res.send({ admin: false });
+      }
+
+      const query = { email: email };
+      const user = await schoolCollection.findOne(query);
+      const result = { admin: user?.status === 'approve' };
+      res.send(result);
+    });
+
+    app.patch('/school/approve/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          status: 'approve',
+        },
+      };
+
+      const result = await schoolCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    app.get('/school/deny/:email', async (req, res) => {
+      const email = req.params.email;
+
+      if (req.decoded.email !== email) {
+        res.send({ admin: false });
+      }
+
+      const query = { email: email };
+      const user = await schoolCollection.findOne(query);
+      const result = { admin: user?.status === 'deny' };
+      res.send(result);
+    });
+
+    app.patch('/school/approve/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          status: 'deny',
+        },
+      };
+
+      const result = await schoolCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     // users api
     app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
       const result = await usersCollection.find().toArray();
